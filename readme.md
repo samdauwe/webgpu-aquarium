@@ -5,9 +5,7 @@ The WebGPU API is the successor to the WebGL and WebGL 2 graphics APIs for the W
 
 WebGPU Aquarium is an reimplementation of [WebGL Aquarium](https://github.com/WebGLSamples/WebGLSamples.github.io) using the WebGPU API and based on the [Dawn](https://dawn.googlesource.com/dawn) backend of the native implementation [Aquarium](https://github.com/webatintel/aquarium). The goal of this project is to compare the performance of WebGPU (JavaScript) version to its native counterparts, such as OpenGL, D3D, Vulkan, Metal, ANGLE and Dawn.
 
-Note: this project is currenlty work in progress, a list with todos is available in this readme file.
-
-[Online Demo](http://samdauwe.github.io/webgpu-aquarium/dist)
+This project is currenlty work in progress, a list with todos is available on the bottom of this page. An online demo of the latest version is available on [this link](http://samdauwe.github.io/webgpu-aquarium/dist).
 
 [![Build Status](https://travis-ci.org/samdauwe/webgpu-aquarium.svg?branch=master)](https://travis-ci.org/samdauwe/webgpu-aquarium)
 
@@ -61,7 +59,7 @@ npm run build
 
 Refresh the aquarium scene on the url 'http://localhost:8080/dist'.
 
-## Todo
+## Todos
 
 * [ ] Inner globe is not properly rendered and is therefore currently disabled.
 * [ ] Debug asynchronous buffer mapping for better performance.
