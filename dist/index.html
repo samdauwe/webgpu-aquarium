@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGPU Aquarium</title>
+    <style>
+        html, body {
+          height: 100%;
+          margin: 0;
+        }
+        
+        .gfx {
+          height: 100%;
+          width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id='not-supported' style="display: none">
+        Your browser does not support WebGPU, please visit <a href='https://webgpu.io' target="_blank">webgpu.io</a> for more information.
+    </div>
+    <canvas id='gfx'></canvas>
+    <script>
+        if (!navigator.gpu) {
+            alert('Your browser does not support WebGPU!');
+            document.getElementById('not-supported').style.display = 'block';
+        }
+        else {
+            // Run WebGPU Aquarium
+            document.write('<script src="./main.js"><\/script>');
+        }
+    </script>
+</body>
+</html>

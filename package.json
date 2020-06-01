@@ -1,0 +1,36 @@
+{
+  "name": "webgpu-aquarium",
+  "version": "0.0.1",
+  "description": "webgpu-aquarium is a WebGPU implementation of WebGL Aquarium.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samdauwe/webgpu-aquarium.git"
+  },
+  "keywords": [
+    "webgpu",
+    "typescript"
+  ],
+  "author": "Sam Dauwe <sam.dauwe@gmail.com>",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/samdauwe/webgpu-aquarium/issues"
+  },
+  "homepage": "https://github.com/samdauwe/webgpu-aquarium#readme",
+  "scripts": {
+    "start": "npm i && npm run build && npm run dev",
+    "dev": "webpack-dev-server --hot --config build/webpack.config.js",
+    "build": "webpack --config build/webpack.config.js"
+  },
+  "dependencies": {
+    "dat.gui": "^0.7.7"
+  },
+  "devDependencies": {
+    "@webgpu/types": "^0.0.24",
+    "http-server": "^0.12.3",
+    "ts-loader": "^7.0.0",
+    "typescript": "^3.8.3",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.11.0"
+  }
+}
