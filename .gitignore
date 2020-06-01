@@ -30,7 +30,6 @@ ts-node
 # Personal Scripts
 *.bat
 *.ssh
-*.sh
 !system.min.js
 
 # Editors
