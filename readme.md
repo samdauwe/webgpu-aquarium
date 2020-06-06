@@ -32,7 +32,7 @@ cd webgpu-aquarium
 npm start
 ```
 
-Launch [Chrome Canary](https://www.google.com/chrome/canary/) with the `enable-unsafe-webgpu` flag set and open the aquarium scene using the url 'http://localhost:8080/dist'. Other browsers were not tested yet, see the [Implementation Status](https://github.com/gpuweb/gpuweb/wiki/Implementation-Status) page for updates on browser support.
+Launch [Chrome Canary](https://www.google.com/chrome/canary/) with the `enable-unsafe-webgpu` flag set (at [chrome://flags/#enable-unsafe-webgpu](chrome://flags/#enable-unsafe-webgpu)) and open the aquarium scene using the url 'http://localhost:8080/dist'. Other browsers were not tested yet, see the [Implementation Status](https://github.com/gpuweb/gpuweb/wiki/Implementation-Status) page for updates on browser support.
 
 ## Local development
 
