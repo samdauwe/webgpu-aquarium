@@ -18,6 +18,7 @@ export class FPSTimer {
     private _logFPS: float[];
 
     private _averageFPS: double;
+    private _averageFrameTime: double;
 
     constructor() {
         this._totalTime = FPSTimer.NUM_FRAMES_TO_AVERAGE * 1.0;
@@ -27,6 +28,7 @@ export class FPSTimer {
         this._historyFrameTime = BuildArray(FPSTimer.NUM_HISTORY_DATA, () => 100.0);
         this._logFPS = [];
         this._averageFPS = 0.0;
+        this._averageFrameTime = 0.0;
     }
 
     public get averageFPS(): double {
@@ -35,6 +37,10 @@ export class FPSTimer {
 
     public get historyFPS(): float[] {
         return this._historyFPS;
+    }
+
+    public get averageFrameTime(): float {
+        return this._averageFrameTime;
     }
 
     public get historyFrameTime(): float[] {
@@ -58,6 +64,8 @@ export class FPSTimer {
         }
         this._historyFPS[FPSTimer.NUM_HISTORY_DATA - 1]       = this._averageFPS;
         this._historyFrameTime[FPSTimer.NUM_HISTORY_DATA - 1] = 1000.0 / this._averageFPS;
+
+        this._averageFrameTime = this._historyFrameTime[FPSTimer.NUM_HISTORY_DATA - 1];
 
         if (testTime - renderingTime > 5 && testTime - renderingTime < 25) {
             this._logFPS.push(this._averageFPS);
