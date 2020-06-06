@@ -405,7 +405,16 @@ export class WorldUniforms {
 
     public static get byteSize(): size_t {
         return (WorldUniforms.kWorld + WorldUniforms.kWorldInverseTranspose + WorldUniforms.kWorldViewProjection) * 4;
-    } 
+    }
+    
+    public clone(): WorldUniforms {
+        const clone: WorldUniforms = new WorldUniforms();
+        clone.world = this.world.slice();
+        clone.worldInverseTranspose = this.worldInverseTranspose.slice();
+        clone.worldViewProjection = this.worldViewProjection.slice();
+        return clone;
+    }
+
 }
 
 export class WorldUniformPer {

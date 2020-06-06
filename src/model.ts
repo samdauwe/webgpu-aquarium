@@ -536,9 +536,9 @@ export class GenericModelWebGPU extends Model {
     }
 
     public updatePerInstanceUniforms(worldUniforms: WorldUniforms): void {
-        this.worldUniformPer.worldUniforms[this._instance] = worldUniforms;
+        this.worldUniformPer.worldUniforms[this._instance] = worldUniforms.clone();
 
-        this._instance++;
+        ++this._instance;
     }
 
 }
@@ -737,7 +737,7 @@ export class OutsideModelWebGPU extends GenericModelWebGPU {
     }
 
     public updatePerInstanceUniforms(worldUniforms: WorldUniforms): void {
-        this.worldUniformPer.worldUniforms[0] = worldUniforms;
+        this.worldUniformPer.worldUniforms[0] = worldUniforms.clone();
 
         this._contextWebGPU.updateBufferData(this._viewBuffer, worldUniforms.data,
                                              this._contextWebGPU.calcConstantBufferByteSize(WorldUniforms.byteSize));
@@ -992,7 +992,7 @@ export class InnerModelWebGPU extends GenericModelWebGPU {
     }
 
     public updatePerInstanceUniforms(worldUniforms: WorldUniforms): void {
-        this.worldUniformPer.worldUniforms[0] = worldUniforms;
+        this.worldUniformPer.worldUniforms[0] = worldUniforms.clone();
 
         this._contextWebGPU.updateBufferData(this._viewBuffer, worldUniforms.data,
                                              this._contextWebGPU.calcConstantBufferByteSize(WorldUniforms.byteSize));
@@ -2052,7 +2052,7 @@ export class SeaweedModelWebGPU extends SeaweedModel {
     }
 
     public updatePerInstanceUniforms(worldUniforms: WorldUniforms): void {
-        this.worldUniformPer.worldUniforms[this._instance] = worldUniforms;
+        this.worldUniformPer.worldUniforms[this._instance] = worldUniforms.clone();
         this.seaweedPer.time[this._instance]               = this._aquarium.g.mclock + this._instance;
 
         this._instance++;
