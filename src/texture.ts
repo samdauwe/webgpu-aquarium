@@ -27,14 +27,29 @@ export class Texture {
         return this._name;
     }
 
-    public static async loadImage(urls: Array<string>): Promise<Array<HTMLImageElement>> {
+    public static imageFlipY(image: HTMLImageElement): void {
+        const imageCanvas = document.createElement('canvas');
+        imageCanvas.width = image.width;
+        imageCanvas.height = image.height;
+
+        const imageCanvasContext = imageCanvas.getContext('2d');
+        imageCanvasContext.translate(0, image.height);
+        imageCanvasContext.scale(1, -1);
+        imageCanvasContext.drawImage(image, 0, 0, image.width, image.height);
+        image.src = imageCanvas.toDataURL();
+    }
+
+    public static async loadImage(urls: Array<string>, flipY: boolean): Promise<Array<HTMLImageElement>> {
         return new Promise(async (resolve, reject) => {
             let images: Array<HTMLImageElement> = [];
             for (let i: size_t = 0; i < urls.length; ++i) {
-                const img = new Image();
+                const img: HTMLImageElement = new Image();
                 try {
                     img.src = urls[i];
                     await img.decode();
+                    if (flipY) {
+                        Texture.imageFlipY(img);
+                    }
                 } catch (e) {
                     console.error("Unable to load image from url: " + urls[i]);
                     reject(images);
@@ -51,10 +66,6 @@ export class Texture {
         imageCanvas.height = img.height;
 
         const imageCanvasContext: CanvasRenderingContext2D = imageCanvas.getContext('2d');
-        if (this._flip) {
-            imageCanvasContext.translate(0, height);
-            imageCanvasContext.scale(1, -1);
-        }
         imageCanvasContext.drawImage(img, 0, 0, width, height);
         const imageData: ImageData = imageCanvasContext.getImageData(0, 0, width, height);
         return imageData;
@@ -173,7 +184,7 @@ export class TextureWebGPU extends Texture {
     public async loadTexture(): Promise<void> {
         return Promise.resolve().then(async () => {
             const kPadding: int = 256;
-            this._images = await Texture.loadImage(this._urls);
+            this._images = await Texture.loadImage(this._urls, this._flip);
             this._onImageLoaded();
             
             if (this._textureViewDimension === "cube") {
@@ -182,7 +193,7 @@ export class TextureWebGPU extends Texture {
                     size: <GPUExtent3DDict> {
                         width: this._width,
                         height: this._height,
-                        depth: 6 // arrayLayerCount ?
+                        depth: 6 // arrayLayerCount is deprecated
                     },
                     sampleCount: 1,
                     format: this._format,
@@ -200,13 +211,13 @@ export class TextureWebGPU extends Texture {
                     new Uint8Array(resultData).set(this._pixelVec[i]);
                     resultBuffer.unmap();
 
-                    let bufferCopyView: GPUBufferCopyView = this._context.createBufferCopyView(resultBuffer, 0, this._width * 4, this._height);
-                    let textureCopyView: GPUTextureCopyView = this._context.createTextureCopyView(
-                        this._texture, 0, i,
+                    const bufferCopyView: GPUBufferCopyView = this._context.createBufferCopyView(resultBuffer, 0, this._width * 4, this._height);
+                    const textureCopyView: GPUTextureCopyView = this._context.createTextureCopyView(
+                        this._texture, 0,
                         <GPUOrigin3DDict> {
                             x: 0,
                             y: 0,
-                            z: 0
+                            z: i
                         }
                     );
                     const copySize: GPUExtent3DDict = {
@@ -242,7 +253,7 @@ export class TextureWebGPU extends Texture {
                 this._sampler = this._context.createSampler(samplerDesc);
             }
             else { // "2d"
-                this._texture = await this._gpuTextureHelper.generateMipmappedTexture(this._urls[0]);
+                this._texture = await this._gpuTextureHelper.generateMipmappedTexture(this._images[0]);
                 this._width = this._gpuTextureHelper.imageBitmapSize.width;
                 this._height = this._gpuTextureHelper.imageBitmapSize.height;
                 
@@ -366,9 +377,8 @@ export class WebGPUTextureHelper {
         });
     }
   
-    async generateMipmappedTexture(url: string): Promise<GPUTexture> {
+    async generateMipmappedTexture(image: HTMLImageElement): Promise<GPUTexture> {
         return new Promise(async (resolve, reject) => {
-            const image: HTMLImageElement = (await Texture.loadImage([url]))[0];
             let imageBitmap: ImageBitmap = await createImageBitmap(image,  0,  0, image.width, image.height);
 
             this.imageBitmapSize = <GPUExtent3DDict> {

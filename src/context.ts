@@ -218,9 +218,11 @@ export class ContextWebGPU extends Context {
     
                 // Logical Device
                 this.device = await this.adapter.requestDevice();
-                this.device.addEventListener('uncapturederror', (event) => {
-                    console.error(event);
-                });
+                if (typeof this.device.addEventListener === 'function') {
+                    this.device.addEventListener('uncapturederror', (event) => {
+                        console.error(event);
+                    });
+                }
 
                 // GLSL to SPIR-V converter
                 this._glslang = await glslangModule();
@@ -328,11 +330,10 @@ export class ContextWebGPU extends Context {
         return bufferCopyView;
     }
 
-    public createTextureCopyView(texture: GPUTexture, level: uint32_t, slice: uint32_t, origin: GPUOrigin3D): GPUTextureCopyView {
+    public createTextureCopyView(texture: GPUTexture, level: uint32_t, origin: GPUOrigin3D): GPUTextureCopyView {
         const textureCopyView: GPUTextureCopyView = {
             texture: texture,
             mipLevel: level,
-            arrayLayer: slice,
             origin: origin
         };
 

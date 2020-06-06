@@ -558,8 +558,8 @@ export class OutsideModelWebGPU extends GenericModelWebGPU {
     }
 
     public dispose(): void {
-        this._viewBuffer = null;
         super.dispose();
+        this._viewBuffer = null;
     }
 
     public init(): void {
@@ -764,9 +764,9 @@ export class InnerModelWebGPU extends GenericModelWebGPU {
     }
 
     public dispose(): void {
+        super.dispose();
         this._innerBuffer = null;
         this._viewBuffer = null;
-        super.dispose();
     }
 
     public init(): void {
