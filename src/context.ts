@@ -212,9 +212,7 @@ export class ContextWebGPU extends Context {
         return new Promise<boolean>(async (resolve, reject) => {
             try {
                 // Physical Device Adapter
-                this.adapter = await navigator.gpu.requestAdapter({
-                    powerPreference: "high-performance"
-                });
+                this.adapter = await navigator.gpu.requestAdapter();
     
                 // Logical Device
                 this.device = await this.adapter.requestDevice();
@@ -330,10 +328,11 @@ export class ContextWebGPU extends Context {
         return bufferCopyView;
     }
 
-    public createTextureCopyView(texture: GPUTexture, level: uint32_t, origin: GPUOrigin3D): GPUTextureCopyView {
+    public createTextureCopyView(texture: GPUTexture, level: uint32_t, slice: uint32_t, origin: GPUOrigin3D): GPUTextureCopyView {
         const textureCopyView: GPUTextureCopyView = {
             texture: texture,
             mipLevel: level,
+            arrayLayer: slice,
             origin: origin
         };
 
