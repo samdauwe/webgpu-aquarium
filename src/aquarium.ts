@@ -5,7 +5,7 @@ import { Buffer } from "./buffer";
 import { Context, ContextWebGPU } from "./context";
 import { FPSTimer } from "./fpsTimer";
 import { IO } from "./io";
-import { Program, ProgramWebGPU } from "./program";
+import { Program } from "./program";
 import { Matrix } from "./matrix";
 import { Model, FishModel } from "./model";
 import { ResourceHelper } from "./resourceHelper";
@@ -820,6 +820,8 @@ export class Aquarium {
     public display(): void {
         let shouldQuit: boolean = this._context.shouldQuit();
         if (!shouldQuit) {
+            this._context.statsBegin()
+
             this._context.keyBoardQuit();
             this._render();
 
@@ -829,6 +831,8 @@ export class Aquarium {
                 && (this.g.then - this.g.start) > this._testTime) {
                 shouldQuit = true
             }
+
+            this._context.statsEnd();
         }
 
         if (!shouldQuit) {

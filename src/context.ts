@@ -11,6 +11,7 @@ import { Model, FishModelWebGPU, FishModelInstancedDrawWebGPU, GenericModelWebGP
          InnerModelWebGPU, OutsideModelWebGPU, SeaweedModelWebGPU } from "./model";
 import { Program, ProgramWebGPU } from "./program";
 import { ResourceHelper } from "./resourceHelper";
+import statsjsModule from './stats-js';
 import { Texture, TextureWebGPU } from "./texture";
 import { FishPerWithPadding, FogUniforms, LightUniforms, LightWorldPositionUniform } from "./uniforms";
 import { ComboRenderPassDescriptor, ComboRenderPipelineDescriptor, ComboVertexStateDescriptor } from "./utils";
@@ -35,6 +36,9 @@ export class Context {
     protected _showOptionWindow: boolean;
     protected _gui: dat.GUI;
     protected _guiSettings: any;
+    protected _statsFPS: any;
+    protected _statsFrameTime: any;
+    protected _statsIntialized = false;
 
     constructor() {
         this._availableToggleBitset = BuildArray(TOGGLE.TOGGLEMAX, () => false);
@@ -54,6 +58,16 @@ export class Context {
 
     public get resourceHelper(): Nullable<ResourceHelper> {
         return this._resourceHelper;
+    }
+
+    public statsBegin(): void {
+        this._statsFPS.begin();
+        this._statsFrameTime.begin();
+    }
+
+    public statsEnd(): void {
+        this._statsFPS.end();
+        this._statsFrameTime.end();
     }
 
     public initialize(toggleBitset: Array<boolean>, canvas: HTMLCanvasElement): Promise<boolean> {
@@ -89,7 +103,22 @@ export class Context {
     public flush(): void {}
     public preFrame(): void {}
     public updateFPS(fpsTimer: FPSTimer, fishCount: int, toggleBitset: Array<boolean>): void {}
-    public showFPS(): void {}
+    
+    public showFPS(canvas?: HTMLCanvasElement): void {
+        if (!this._statsIntialized && canvas && this._statsFPS && this._statsFrameTime) {
+            // FPS
+            this._statsFPS.showPanel(0); // Panel 0 = fps
+            this._statsFPS.domElement.style.cssText = 'position:absolute;top:10px;left:10px;';
+            canvas.parentNode.appendChild(this._statsFPS.domElement);
+            // Frame Time
+            this._statsFrameTime.showPanel(1); // Panel 1 = ms
+            this._statsFrameTime.domElement.style.cssText = 'position:absolute;top:10px;left:91px;';
+            canvas.parentNode.appendChild(this._statsFrameTime.domElement);
+
+            this._statsIntialized = true;
+        }
+    }
+
     public reallocResource(preTotalInstance: int, curTotalInstance: int, enableDynamicBufferOffset: boolean): void {}
     public updateAllFishData(): void {}
     public beginRenderPass(): void {}
@@ -291,6 +320,10 @@ export class ContextWebGPU extends Context {
             
                 // Create the buffer manager
                 this._bufferManager = new BufferManagerWebGPU(this, !toggleBitset[TOGGLE.BUFFERMAPPINGASYNC]);
+            
+                // JavaScript Performance Monitor
+                this._statsFPS = await statsjsModule();
+                this._statsFrameTime = await statsjsModule();
             } catch (e) {
                 reject("Unable initialize the WebGPU context " + e)
                 return false;
@@ -696,6 +729,14 @@ export class ContextWebGPU extends Context {
         }
         
         this.renderGUI(this._canvas, fpsTimer, fishCount, toggleBitset);
+    }
+
+    public showFPS(canvas?: HTMLCanvasElement): void {
+        if (this._disableControlPanel) {
+            return;
+        }
+
+        super.showFPS(this._canvas);
     }
 
     public createModel(aquarium: Nullable<Aquarium>, type: MODELGROUP, name: MODELNAME, blend: boolean): Nullable<Model> {
