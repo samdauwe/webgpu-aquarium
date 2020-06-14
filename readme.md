@@ -61,11 +61,14 @@ Refresh the aquarium scene on the url 'http://localhost:8080/dist'.
 
 ## Todos
 
-* [ ] Inner globe is not properly rendered and is therefore currently disabled.
+* [ ] Inner globe is not properly rendered.
 * [ ] Debug asynchronous buffer mapping for better performance.
-* [ ] Add control panel (i.e. to configure the amount of fish and showing the fps).
+* [ ] Add control panel
+  * [x] ~~Show FPS and Frame time~~
+  * [x] ~~Show current settings~~
+  * [ ] Configure the amount of fish
 * [ ] Seaweeds are not rendered transparent and are flickering.
-* [ ] Scene does not exacly match the native counterpart (i.e. placement of meshes).
+* [x] ~~Scene does not exacly match the native counterpart (i.e. placement of meshes).~~
 * [ ] Implement scene resize.
 
 ## License
