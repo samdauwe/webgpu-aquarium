@@ -1,5 +1,6 @@
 /// <reference path="../node_modules/@webgpu/types/dist/index.d.ts" />
 
+import * as dat from 'dat.gui';
 import { ASSERT, BuildArray, Nullable, float, int, uint32_t, size_t } from "./types";
 import { Aquarium, TOGGLE, MODELGROUP, MODELNAME } from "./aquarium";
 import { Buffer, BufferWebGPU } from "./buffer";
@@ -31,10 +32,12 @@ export class Context {
     protected _availableToggleBitset: Array<boolean>;
     protected _disableControlPanel: boolean;
 
-    private _showOptionWindow: boolean;
+    protected _showOptionWindow: boolean;
+    protected _gui: dat.GUI;
+    protected _guiSettings: any;
 
     constructor() {
-        this._availableToggleBitset = BuildArray(TOGGLE.TOGGLEMAX, () => false) 
+        this._availableToggleBitset = BuildArray(TOGGLE.TOGGLEMAX, () => false);
     }
 
     public get clientWidth(): int {
@@ -97,6 +100,42 @@ export class Context {
 
     public initGeneralResources(aquarium: Nullable<Aquarium>): void {}
     public updateWorldlUniforms(aquarium: Nullable<Aquarium>): void {}
+
+    protected renderGUI(canvas: HTMLCanvasElement, fpsTimer: FPSTimer, fishCount: int, toggleBitset: Array<boolean>): void {
+        if (!this._gui) {
+            this._gui = new dat.GUI({ autoPlace: false});
+            // Settings
+            this._guiSettings = {
+                Resolution: String(this._clientWidth + "x" + this.clientHeight),
+                MSAAx4: Boolean(toggleBitset[TOGGLE.ENABLEMSAAx4] ? true : false),
+                ALPHABLENDING: Boolean(toggleBitset[TOGGLE.ENABLEALPHABLENDING] ? true : false),
+                DBO: Boolean(toggleBitset[TOGGLE.ENABLEDYNAMICBUFFEROFFSET] ? true : false),
+                INSTANCEDDRAWS: Boolean(toggleBitset[TOGGLE.ENABLEINSTANCEDDRAWS] ? true : false),
+                RENDERPASS: Boolean(toggleBitset[TOGGLE.DISABLED3D12RENDERPASS] ? false : true),
+                VALIDATION: Boolean(toggleBitset[TOGGLE.DISABLEWEBGPUVALIDATION] ? false : true),
+                BUFFERMAPPINGASNC: Boolean(toggleBitset[TOGGLE.BUFFERMAPPINGASYNC] ? true : false),
+            };
+            let counter: uint32_t = 0;
+            for (let prop in this._guiSettings) {
+                const property = this._gui.add(this._guiSettings, String(prop))
+                const value: String | Boolean = this._guiSettings[prop];
+                if (typeof value === 'string' || value instanceof String) {
+                    property.name(String(prop) + ": " + String(value));
+                }
+                else if (typeof value === 'boolean' || value instanceof Boolean) {
+                    property.name(String(prop) + ": " + String(Boolean(value) ? "ON" : "OFF"));
+                }
+                property.domElement.style.pointerEvents = "none";
+                // Navigate through the DOM & add class to the 'span' element
+                this._gui.__ul.childNodes[counter++].childNodes[0].childNodes[0].classList += ' full_width';
+            }
+            //  Add to canvas
+            this._gui.domElement.style.position = 'absolute';
+            this._gui.domElement.style.top = '10px';
+            this._gui.domElement.style.right = '10px';
+            canvas.parentNode.appendChild(this._gui.domElement);
+        }
+    }
 
     protected setWindowSize(windowWidth: int, windowHeight: int): void {
         if (windowWidth !== 0) {
@@ -649,6 +688,14 @@ export class ContextWebGPU extends Context {
         }
 
         this._renderPass = this._commandEncoder.beginRenderPass(this._renderPassDescriptor);
+    }
+
+    public updateFPS(fpsTimer: FPSTimer, fishCount: int, toggleBitset: Array<boolean>): void {
+        if (this._disableControlPanel) {
+            return;
+        }
+        
+        this.renderGUI(this._canvas, fpsTimer, fishCount, toggleBitset);
     }
 
     public createModel(aquarium: Nullable<Aquarium>, type: MODELGROUP, name: MODELNAME, blend: boolean): Nullable<Model> {

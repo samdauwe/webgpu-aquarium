@@ -238,13 +238,13 @@ export const g_sceneInfo: G_sceneInfo[] = [
         fog: false,
         type: MODELGROUP.GENERIC
     },
-    /*{
+    {
         namestr: "GlobeInner",
         name: MODELNAME.MODELGLOBEINNER,
         program: ["innerRefractionMapVertexShader", "innerRefractionMapFragmentShader"],
         fog: true,
         type: MODELGROUP.INNER
-    },*/
+    },
     {
         namestr: "RockA",
         name: MODELNAME.MODELROCKA,
@@ -1216,7 +1216,7 @@ export class Aquarium {
         }
 
         const updateAndDrawForEachFish: Boolean = this.toggleBitset[TOGGLE.UPATEANDDRAWFOREACHMODEL];
-
+ 
         if (updateAndDrawForEachFish) {
             this._updateAndDrawBackground();
             this._updateAndDrawFishes();

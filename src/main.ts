@@ -7,6 +7,8 @@ async function runWebGPUAquarium() {
         canvas: canvas,
         enable_full_screen_mode: true,
         num_fish: 100,
+        enable_msaa: true,
+        disable_control_panel: false,
     }
     aquarium.init(options)
         .then((success: boolean) => {
