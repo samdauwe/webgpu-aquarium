@@ -363,6 +363,7 @@ export class ContextWebGPU extends Context {
 
     protected _initAvailableToggleBitset(): void {
         this._availableToggleBitset[TOGGLE.ENABLEMSAAx4]              = true;
+        this._availableToggleBitset[TOGGLE.ENABLEINSTANCEDDRAWS]      = false; // Not yet finished
         this._availableToggleBitset[TOGGLE.ENABLEDYNAMICBUFFEROFFSET] = false; // Not supported ?
         this._availableToggleBitset[TOGGLE.DISCRETEGPU]               = true;
         this._availableToggleBitset[TOGGLE.INTEGRATEDGPU]             = true;
