@@ -615,6 +615,9 @@ export class Aquarium {
     private _skyUrls: Array<string>;
     private _fishBehavior: Array<Nullable<Behavior>>;
 
+    private _fisCountGetter: () => int;
+    private _fisCountSetter: (fishCount: int) => void;
+
     constructor() {            
         this._curFishCount = 1;
         this._preFishCount = 0;
@@ -638,6 +641,9 @@ export class Aquarium {
         this.toggleBitset    = BuildArray(TOGGLE.TOGGLEMAX, () => false);
         this._aquariumModels = BuildArray(MODELNAME.MODELMAX, () => null);
         this._fpsTimer       = new FPSTimer();
+
+        this._fisCountGetter = () => { return this.curFishCount};
+        this._fisCountSetter = (fishCount: int) => { this.curFishCount = fishCount};
     }
 
     public dispose(): void {
@@ -650,6 +656,11 @@ export class Aquarium {
 
     public get curFishCount(): int {
         return this._curFishCount;
+    }
+
+    public set curFishCount(value: int) {
+        // Not fully working yet
+        // this._curFishCount = value;
     }
 
     public get preFishCount(): int {
@@ -1224,12 +1235,12 @@ export class Aquarium {
         if (updateAndDrawForEachFish) {
             this._updateAndDrawBackground();
             this._updateAndDrawFishes();
-            this._context.updateFPS(this._fpsTimer, this.curFishCount, this.toggleBitset);
+            this._context.updateFPS(this._fpsTimer, this._fisCountGetter, this._fisCountSetter , this.toggleBitset);
         }
         else {
             this._updateBackground();
             this._updateFishes();
-            this._context.updateFPS(this._fpsTimer, this.curFishCount, this.toggleBitset);
+            this._context.updateFPS(this._fpsTimer, this._fisCountGetter, this._fisCountSetter, this.toggleBitset);
 
             // Begin render pass
             this._context.beginRenderPass();
