@@ -8,6 +8,7 @@ async function runWebGPUAquarium() {
         enable_full_screen_mode: true,
         num_fish: 100,
         enable_msaa: true,
+        buffer_mapping_async: false,
         disable_control_panel: false,
     }
     aquarium.init(options)

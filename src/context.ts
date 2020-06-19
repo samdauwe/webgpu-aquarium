@@ -221,6 +221,7 @@ export class ContextWebGPU extends Context {
 
     public adapter: GPUAdapter; // The backend adapter
     public device: GPUDevice;
+    private _hasWebGPUValidationErrors: boolean = false;
     
     private static readonly kSwapchainBackBufferUsage: GPUTextureUsageFlags =
         GPUTextureUsage.OUTPUT_ATTACHMENT | GPUTextureUsage.COPY_SRC;
@@ -308,10 +309,13 @@ export class ContextWebGPU extends Context {
     
                 // Logical Device
                 this.device = await this.adapter.requestDevice();
-                if (typeof this.device.addEventListener === 'function') {
-                    this.device.addEventListener('uncapturederror', (event) => {
-                        console.error(event);
-                    });
+                if (!toggleBitset[TOGGLE.DISABLEWEBGPUVALIDATION]) {
+                    if (typeof this.device.addEventListener === 'function') {
+                        this.device.addEventListener('uncapturederror', (event) => {
+                            this._hasWebGPUValidationErrors = true;
+                            console.error(event);
+                        });
+                    }
                 }
 
                 // GLSL to SPIR-V converter
@@ -359,7 +363,6 @@ export class ContextWebGPU extends Context {
 
     protected _initAvailableToggleBitset(): void {
         this._availableToggleBitset[TOGGLE.ENABLEMSAAx4]              = true;
-        this._availableToggleBitset[TOGGLE.ENABLEINSTANCEDDRAWS]      = true;
         this._availableToggleBitset[TOGGLE.ENABLEDYNAMICBUFFEROFFSET] = false; // Not supported ?
         this._availableToggleBitset[TOGGLE.DISCRETEGPU]               = true;
         this._availableToggleBitset[TOGGLE.INTEGRATEDGPU]             = true;
@@ -396,6 +399,10 @@ export class ContextWebGPU extends Context {
             await texture.loadTexture();
             return texture;
         });
+    }
+
+    public shouldQuit(): boolean {
+        return this._hasWebGPUValidationErrors;
     }
 
     public createTexture(descriptor: GPUTextureDescriptor): GPUTexture {
