@@ -25,7 +25,7 @@
     "dat.gui": "^0.7.7"
   },
   "devDependencies": {
-    "@webgpu/types": "^0.0.24",
+    "@webgpu/types": "^0.0.25",
     "http-server": "^0.12.3",
     "ts-loader": "^7.0.0",
     "typescript": "^3.8.3",
