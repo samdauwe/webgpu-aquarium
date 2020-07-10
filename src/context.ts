@@ -432,11 +432,10 @@ export class ContextWebGPU extends Context {
         return bufferCopyView;
     }
 
-    public createTextureCopyView(texture: GPUTexture, level: uint32_t, slice: uint32_t, origin: GPUOrigin3D): GPUTextureCopyView {
+    public createTextureCopyView(texture: GPUTexture, level: uint32_t, origin: GPUOrigin3D): GPUTextureCopyView {
         const textureCopyView: GPUTextureCopyView = {
             texture: texture,
             mipLevel: level,
-            arrayLayer: slice,
             origin: origin
         };
 
@@ -794,7 +793,7 @@ export class ContextWebGPU extends Context {
                 break;
             default:
                 model = null;
-                console.error("Can not create model type: " + type);
+                console.error(`Can not create model type: ${type}`);
         }
 
         return model;

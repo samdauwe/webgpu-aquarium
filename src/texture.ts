@@ -213,11 +213,11 @@ export class TextureWebGPU extends Texture {
 
                     const bufferCopyView: GPUBufferCopyView = this._context.createBufferCopyView(resultBuffer, 0, this._width * 4, this._height);
                     const textureCopyView: GPUTextureCopyView = this._context.createTextureCopyView(
-                        this._texture, 0, i,
+                        this._texture, 0,
                         <GPUOrigin3DDict> {
                             x: 0,
                             y: 0,
-                            z: 0
+                            z: i
                         }
                     );
                     const copySize: GPUExtent3DDict = {
