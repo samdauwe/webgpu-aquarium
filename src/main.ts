@@ -6,7 +6,7 @@ async function runWebGPUAquarium() {
     const options: AquariumOptions = {
         canvas: canvas,
         enable_full_screen_mode: true,
-        num_fish: 100,
+        num_fish: 50,
         enable_msaa: true,
         buffer_mapping_async: false,
         disable_control_panel: false,
