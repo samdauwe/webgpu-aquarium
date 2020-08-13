@@ -1173,7 +1173,7 @@ export class Aquarium {
         Matrix.mulMatrixMatrix4(lightWorldPositionUniform.viewProjection, g.view, g.projection);
         Matrix.inverse4(g.viewProjectionInverse, lightWorldPositionUniform.viewProjection);
 
-        // memcpy(g.skyView, g.view, 16 * sizeof(float));
+        g.skyView = g.view.slice();
         g.skyView[12] = 0.0;
         g.skyView[13] = 0.0;
         g.skyView[14] = 0.0;
@@ -1185,7 +1185,8 @@ export class Aquarium {
         Matrix.mulScalarVector(20.0, g.v3t0, 3);
         Matrix.mulScalarVector(30.0, g.v3t1, 3);
         Matrix.addVector(lightWorldPositionUniform.lightWorldPos, g.eyePosition, g.v3t0, 3);
-        Matrix.addVector(lightWorldPositionUniform.lightWorldPos, lightWorldPositionUniform.lightWorldPos, g.v3t1, 3);
+        Matrix.addVector(lightWorldPositionUniform.lightWorldPos,
+                         lightWorldPositionUniform.lightWorldPos, g.v3t1, 3);
 
         // update world uniforms for WebGPU backend
         this._context.updateWorldlUniforms(this);

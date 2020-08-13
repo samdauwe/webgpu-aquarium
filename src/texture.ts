@@ -99,7 +99,7 @@ export class Texture {
 
         let data: Uint8ClampedArray = null;
 
-        const bytesPerRow = Math.ceil(image.width * 4 / 256) * 256;
+        const bytesPerRow = Math.ceil(image.width * 4 / image.width) * image.width;
         if (bytesPerRow == image.width * 4) {
             data = imageData.data;
         } else {
@@ -204,8 +204,8 @@ export class TextureWebGPU extends Texture {
                 
                 for (let i: uint32_t = 0; i < 6; ++i) {
                     let [resultBuffer, resultData] = this._context.createBufferMapped(
-                        GPUBufferUsage.COPY_SRC | GPUBufferUsage.MAP_WRITE,
-                        this._width * this._height * 4
+                        this._width * this._height * 4,
+                        GPUBufferUsage.COPY_SRC | GPUBufferUsage.MAP_WRITE
                     );
                     this._pixelVec[i] = this.getImagePixels(this._images[i]);
                     new Uint8Array(resultData).set(this._pixelVec[i]);

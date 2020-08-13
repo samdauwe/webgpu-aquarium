@@ -572,7 +572,7 @@ export class ContextWebGPU extends Context {
     }
 
     public setBufferData(buffer: GPUBuffer, start: uint32_t, size: uint32_t, pixels: Float32Array | Uint16Array): void {
-        let [resultBuffer, resultData] = this.createBufferMapped(GPUBufferUsage.MAP_WRITE | GPUBufferUsage.COPY_SRC, size);
+        let [resultBuffer, resultData] = this.createBufferMapped(size, GPUBufferUsage.MAP_WRITE | GPUBufferUsage.COPY_SRC);
     
         const writeArray = pixels instanceof Uint16Array ? new Uint16Array(resultData) : new Float32Array(resultData);
         writeArray.set(pixels);
@@ -864,13 +864,14 @@ export class ContextWebGPU extends Context {
         }
     }
 
-    public createBufferMapped(usage: GPUBufferUsageFlags, size: uint32_t): [GPUBuffer, ArrayBuffer] {
-        const descriptor: GPUBufferDescriptor = {
+    public createBufferMapped(size: uint32_t, usage: GPUBufferUsageFlags): [GPUBuffer, ArrayBuffer] {
+         const buffer = this.device.createBuffer(<GPUBufferDescriptor> {
+            mappedAtCreation: true,
             size: size,
-            usage: usage
-        }
+            usage: usage,
+        });
 
-        const result: [GPUBuffer, ArrayBuffer] = this.device.createBufferMapped(descriptor);
+        const result: [GPUBuffer, ArrayBuffer] = [buffer, buffer.getMappedRange()];
         ASSERT(result[1].byteLength === size, "Invalid buffer size.");
         return result;
     }

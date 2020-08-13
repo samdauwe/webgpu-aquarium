@@ -27,6 +27,9 @@ build/Release
 bin
 ts-node
 
+# Temporary folders
+tests
+
 # Personal Scripts
 *.bat
 *.ssh

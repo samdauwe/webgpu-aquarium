@@ -85,7 +85,7 @@ export class RingBufferWebGPU extends RingBuffer {
         this._head = 0;
         this._tail = 0;
 
-        let [resultBuffer, resultData] = this.bufferManager.context.createBufferMapped(GPUBufferUsage.MAP_WRITE | GPUBufferUsage.COPY_SRC, size);
+        let [resultBuffer, resultData] = this.bufferManager.context.createBufferMapped(size, GPUBufferUsage.MAP_WRITE | GPUBufferUsage.COPY_SRC);
         this._bufferMappedResultBuffer = resultBuffer;
         this._pixels = resultData;
 

@@ -924,6 +924,7 @@ export class InnerModelWebGPU extends GenericModelWebGPU {
                         resource: <GPUBufferBinding> {
                             buffer: this._innerBuffer,
                             offset: 0,
+                            size: InnerUniforms.byteSize
                         }
                     },
                     {
@@ -963,6 +964,7 @@ export class InnerModelWebGPU extends GenericModelWebGPU {
                         resource: <GPUBufferBinding> {
                             buffer: this._viewBuffer,
                             offset: 0,
+                            size: this._contextWebGPU.calcConstantBufferByteSize(WorldUniforms.byteSize)
                         }
                     }
                 ]
@@ -994,7 +996,7 @@ export class InnerModelWebGPU extends GenericModelWebGPU {
     public updatePerInstanceUniforms(worldUniforms: WorldUniforms): void {
         this.worldUniformPer.worldUniforms[0] = worldUniforms.clone();
 
-        this._contextWebGPU.updateBufferData(this._viewBuffer, worldUniforms.data,
+        this._contextWebGPU.updateBufferData(this._viewBuffer, this.worldUniformPer.worldUniforms[0].data,
                                              this._contextWebGPU.calcConstantBufferByteSize(WorldUniforms.byteSize));
     }
 
